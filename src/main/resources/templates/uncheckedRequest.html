@@ -1,0 +1,74 @@
+<!DOCTYPE HTML>
+<html  xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+  <title th:text="${title}"></title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="_csrf" th:content="${_csrf.token}"/>
+  <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+</head>
+<body class="bg-light">
+<div class="container">
+  <main>
+    <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+      <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+        <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
+        <span class="fs-4">Credit calculator</span>
+      </a>
+      <ul class="nav nav-pills">
+        <li class="nav-item"><a href="/" class="nav-link" aria-current="page">Home</a></li>
+        <li class="nav-item"><a href="/login" class="nav-link" sec:authorize="isAnonymous()">Login</a></li>
+        <form th:action="@{/logout}" method="post">
+          <input class="nav-link" sec:authorize="isAuthenticated()" type="submit" value="Logout"/>
+        </form>
+        <!--<li class="nav-item"><a class="nav-link" th:href="@{/user}" sec:authorize="hasAuthority('ADMIN')">UserList</a></li>-->
+        <li class="nav-item"><a href="/user/profile" class="nav-link active" sec:authorize="hasAuthority('USER')">Profile</a></li>
+      </ul>
+    </header>
+    <ul class="nav nav-pills">
+      <li class="nav-item"><a href="/" class="nav-link active" style="margin-bottom: 10px">Back</a></li>
+    </ul>
+    <div class="bg-white border rounded-5">
+
+      <section class="w-100 p-4 d-flex justify-content-center pb-4">
+        <table cellpadding="7" >
+          <tr>
+            <th>Имя пользователя</th>
+            <th>Рейтинг</th>
+            <th>Дата выдачи</th>
+            <th>Сумма кредита</th>
+            <th>Процентная ставка</th>
+            <th>Количество расчетных периодов</th>
+            <th>Сумма к последней выплате</th>
+            <th>Тип выплат</th>
+            <th>Делали выплаты</th>
+          </tr>
+          <tr th:each = "request: ${unchecked}">
+            <td th:text="${request.user.userName}"></td>
+            <td th:text="${request.user.rate}"></td>
+            <td th:text="${#dates.format(request.startDate, 'dd.MM.yyyy')}"></td>
+            <td th:text="${#numbers.formatDecimal(request.initialBalance, 0, 'COMMA', 2, 'POINT')}"></td>
+            <td th:text="${#numbers.formatDecimal(request.interestRate, 0, 'COMMA', 2, 'POINT')} + '%'"></td>
+            <td th:text="${request.durationInMonths}"></td>
+            <td th:text="${request.futureValue}"></td>
+            <td th:if="${request.paymentType}">End of the pay period</td>
+            <td th:unless="${request.paymentType}">Start of the pay period</td>
+            <td><a th:href="@{/showFinishedSchedule/{request}(request=${request.id})}" href="#">show</a></td>
+            <td>
+              <form th:action="@{/uncheckedRequest/confirm/{request}(request=${request.id})}" method="post">
+                <button class="btn btn-primary my-2" type="submit">Confirm</button>
+              </form>
+            </td>
+            <td>
+              <form th:action="@{/uncheckedRequest/unconfirm/{request}(request=${request.id})}" method="post">
+                <button class="btn btn-primary my-2" type="submit">Reject</button>
+              </form>
+            </td>
+          </tr>
+        </table>
+      </section>
+    </div>
+  </main>
+</div>
+</body>
+</html>

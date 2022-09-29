@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <title th:text="${title}"></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+</head>
+<body class="bg-light">
+<div class="container">
+    <main>
+        <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+            <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+                <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
+                <span class="fs-4">Credit calculator</span>
+            </a>
+            <ul class="nav nav-pills">
+                <li class="nav-item"><a href="/" class="nav-link" >Home</a></li>
+                <li class="nav-item"><a href="/login" class="nav-link active" aria-current="page">Login</a></li>
+            </ul>
+        </header>
+
+        <div class="bg-white border rounded-5">
+
+            <section class="w-100 p-4 d-flex justify-content-center pb-4">
+                <div style="width: 26rem;">
+                    <!-- Pills navs -->
+                    <ul class="nav nav-pills nav-justified mb-3" id="ex1" role="tablist">
+                        <li class="nav-item"><a href="/login" class="nav-link" sec:authorize="isAnonymous()">Login</a></li>
+                        <li class="nav-item"><a href="/register" class="nav-link active">Register</a></li>
+                    </ul>
+                    <!-- Pills navs -->
+
+                    <!-- Pills content -->
+                    <div class="tab-content">
+                        <div class="tab-pane fade" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
+                            <form>
+                                <!-- Email input -->
+                                <div class="form-outline mb-4">
+                                    <input type="email" id="loginName" class="form-control">
+                                    <label class="form-label" for="loginName" style="margin-left: 0px;">Email or username</label>
+                                    <div class="form-notch"><div class="form-notch-leading" style="width: 9px;"></div><div class="form-notch-middle" style="width: 114.4px;"></div><div class="form-notch-trailing"></div></div></div>
+
+                                <!-- Password input -->
+                                <div class="form-outline mb-4">
+                                    <input type="password" id="loginPassword" class="form-control">
+                                    <label class="form-label" for="loginPassword" style="margin-left: 0px;">Password</label>
+                                    <div class="form-notch"><div class="form-notch-leading" style="width: 9px;"></div><div class="form-notch-middle" style="width: 64.8px;"></div><div class="form-notch-trailing"></div></div></div>
+
+                                <!-- 2 column grid layout -->
+                                <div class="row mb-4">
+                                    <div class="col-md-6 d-flex justify-content-center">
+                                        <!-- Checkbox -->
+                                        <div class="form-check mb-3 mb-md-0">
+                                            <input class="form-check-input" type="checkbox" value="" id="loginCheck" checked="">
+                                            <label class="form-check-label" for="loginCheck"> Remember me </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 d-flex justify-content-center">
+                                        <!-- Simple link -->
+                                        <a href="#!">Forgot password?</a>
+                                    </div>
+                                </div>
+
+                                <!-- Submit button -->
+                                <button type="submit" class="btn btn-primary btn-block mb-4">Sign in</button>
+
+                                <!-- Register buttons -->
+                                <div class="text-center">
+                                    <p>Not a member? <a href="#!">Register</a></p>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="tab-pane fade active show" id="pills-register" role="tabpanel" aria-labelledby="tab-register">
+                            <form th:action="@{/register}" th:object="${user}" method="post" class="needs-validation" novalidate>
+                                <!-- Name input -->
+                                <div class="form-outline mb-4">
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('userName')}" th:class="${#fields.hasErrors('userName')}? error" style="color:#dd3949">
+                                        Please choose a username.
+                                    </div>
+                                    <input type="text" id="userName" class="form-control" th:field="*{userName}" th:classappend="${not #lists.isEmpty(#fields.errors('userName'))} ? is-invalid" required>
+                                    <label class="form-label" for="userName" style="margin-left: 0px;">Firstname, lastname and surname</label>
+                                    <div class="form-notch"><div class="form-notch-leading" style="width: 9px;"></div><div class="form-notch-middle" style="width: 42.4px;"></div><div class="form-notch-trailing"></div></div></div>
+
+                                <div class="form-outline mb-4">
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('userLogin')}" th:class="${#fields.hasErrors('userLogin')}? error" style="color:#dd3949">
+                                        Please choose a login.
+                                    </div>
+                                    <div class="input-group">
+                                        <!--<div class="input-group-prepend">
+                                            <span class="input-group-text" id="inputGroupPrepend">@</span>
+                                        </div>-->
+                                        <input type="text" id="userLogin" class="form-control" th:field="*{userLogin}" th:classappend="${not #lists.isEmpty(#fields.errors('userLogin'))} ? is-invalid" required>
+                                    </div>
+                                    <label class="form-label" for="userLogin" style="margin-left: 0px;">Login</label>
+                                </div>
+
+                                <div class="form-outline mb-4">
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('phone')}" th:class="${#fields.hasErrors('phone')}? error" style="color:#dd3949">
+                                        Please enter a valid phone number.
+                                    </div>
+                                    <input type="text" max="11" onkeyup="this.value = this.value.replace(/[^\d]/g,'');" id="phone" class="form-control" th:field="*{phone}" th:classappend="${not #lists.isEmpty(#fields.errors('phone'))} ? is-invalid" required>
+                                    <label class="form-label" for="phone" style="margin-left: 0px;">Phone</label>
+                                    <div class="form-notch"><div class="form-notch-leading" style="width: 9px;"></div><div class="form-notch-middle" style="width: 64.8px;"></div><div class="form-notch-trailing"></div></div></div>
+
+                                <div class="form-outline mb-4">
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('dateBirthday')}" th:class="${#fields.hasErrors('dateBirthday')}? error" style="color:#dd3949">
+                                        Please choose a date birthday.
+                                    </div>
+                                    <input type="date" class="form-control" id="birthday" th:field="*{dateBirthday}" th:classappend="${not #lists.isEmpty(#fields.errors('dateBirthday'))} ? is-invalid" required>
+                                    <label class="form-label" for="birthday" style="margin-left: 0px;">Date of birthday</label>
+                                    <div class="form-notch"><div class="form-notch-leading" style="width: 9px;"></div><div class="form-notch-middle" style="width: 64.8px;"></div><div class="form-notch-trailing"></div></div></div>
+
+                                <div class="form-outline mb-4">
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('seriesPassport')}" th:class="${#fields.hasErrors('seriesPassport')}? error" style="color:#dd3949">
+                                        Please choose a series passport.
+                                    </div>
+                                    <input type="text" maxlength="4" onkeyup="this.value = this.value.replace(/[^\d]/g,'');" id="seriesPassport" class="form-control" th:field="*{seriesPassport}" th:classappend="${not #lists.isEmpty(#fields.errors('seriesPassport'))} ? is-invalid" required>
+                                    <label class="form-label" for="seriesPassport" style="margin-left: 0px;">Series Passport</label>
+                                    <div class="form-notch"><div class="form-notch-leading" style="width: 9px;"></div><div class="form-notch-middle" style="width: 64.8px;"></div><div class="form-notch-trailing"></div></div></div>
+
+                                <div class="form-outline mb-4">
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('numberPassport')}" th:class="${#fields.hasErrors('numberPassport')}? error" style="color:#dd3949">
+                                        Please choose a ID passport.
+                                    </div>
+                                    <input type="text" maxlength="6" onkeyup="this.value = this.value.replace(/[^\d]/g,'');" id="numberPassport" class="form-control" th:field="*{numberPassport}" th:classappend="${not #lists.isEmpty(#fields.errors('numberPassport'))} ? is-invalid" required>
+                                    <label class="form-label" for="numberPassport" style="margin-left: 0px;">ID Passport</label>
+                                    <div class="form-notch"><div class="form-notch-leading" style="width: 9px;"></div><div class="form-notch-middle" style="width: 64.8px;"></div><div class="form-notch-trailing"></div></div></div>
+
+                                <!-- Password input -->
+                                <div class="form-outline mb-4">
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('password')}" th:class="${#fields.hasErrors('password')}? error" style="color:#dd3949">
+                                        Please enter a password longer than 6 and identity
+                                    </div>
+                                    <input type="password" id="registerPassword" class="form-control" th:field="*{password}" th:classappend="${not #lists.isEmpty(#fields.errors('password'))} ? is-invalid" required>
+                                    <label class="form-label" for="registerPassword" style="margin-left: 0px;">Password</label>
+                                    <div class="form-notch"><div class="form-notch-leading" style="width: 9px;"></div><div class="form-notch-middle" style="width: 64.8px;"></div><div class="form-notch-trailing"></div></div></div>
+
+                                <!-- Repeat Password input-->
+                                <div class="form-outline mb-4">
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('password')}" th:class="${#fields.hasErrors('password')}? error" style="color:#dd3949">
+
+                                    </div>
+                                    <input type="password" id="registerRepeatPassword" class="form-control" th:field="*{passwordConfirmation}" th:classappend="${not #lists.isEmpty(#fields.errors('passwordConfirmation'))} ? is-invalid" required>
+                                    <label class="form-label" for="registerRepeatPassword" style="margin-left: 0px;">Repeat password</label>
+                                    <div class="form-notch"><div class="form-notch-leading" style="width: 9px;"></div><div class="form-notch-middle" style="width: 106.4px;"></div><div class="form-notch-trailing"></div></div></div>
+
+                                <!-- Checkbox -->
+
+                                <!-- Submit button -->
+                                <button type="submit" class="btn btn-primary btn-block mb-3">Sign in</button>
+                            </form>
+                        </div>
+                    </div>
+                    <!-- Pills content -->
+                </div>
+            </section>
+
+        </div>
+        <!--<button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>-->
+        </form>
+    </main>
+    <div id="wot-new-assistant-container"><div data-reactroot=""></div></div>
+    </main>
+</div>
+</body>
+</html>
